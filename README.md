@@ -1,4 +1,4 @@
-# CCEL - Common Communication Event Layer
+# CCEL - Common Communication Event Layer [![Build Status](https://travis-ci.org/Sleeplessy/ccel.svg?branch=master)](https://travis-ci.org/Sleeplessy/ccel)
 
 CCEL provides a variant set of effective network-apis and udev binding implemented under Boost.It uses a managed handler pool to achieve memory management(using Boost.object_pool),and suppords function hooking through handlers. 
 
