@@ -1,5 +1,4 @@
 language: cpp
-dist: trusty
 branches:
   only:
     - master
@@ -9,7 +8,10 @@ compiler:
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install libboost-dev ninja
+
+addons:
+  apt:
+    packages: libboost-all-dev
 
 install: sudo apt-get install ninja-build
 
