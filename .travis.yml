@@ -16,5 +16,9 @@ before_install:
 
 install: sudo apt-get install ninja-build
 
-script: mkdir build&& cd build && cmake .. -G Ninja && ninja j2
+script:
+  - mkdir build
+  - cd build
+  - cmake .. -G Ninja
+  - ninja all j2
 os: linux
