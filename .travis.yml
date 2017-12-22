@@ -1,10 +1,10 @@
-language:cpp
-
+language: cpp
+dist: trusty
 compiler:
   - gcc
   - clang
 
-before_script:
+before_install:
   - sudo apt-get update -qq
   - sudo apt-get install libboost-dev ninja
 
