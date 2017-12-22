@@ -1,0 +1,16 @@
+# CCEL - Common Communication Event Layer
+
+CCEL provides a vaariant set of effective network-apis implemented upon Boost.Asio.
+
+# Protocols that supported
+
++ Modbus
++ CANBus
++ TCP
++ UDP
++ HTTP
+
+# Usage
+
+Include "ccel/ccel.hpp" for all protocols or includes sperated headers for exact functions.
+You can also use ccel/udev.hpp to handle user-space devices (like uinput)
