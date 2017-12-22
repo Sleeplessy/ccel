@@ -7,9 +7,12 @@ compiler:
   - gcc
   - clang
 
+addons:
+  apt:
+    packages: libboost-all-dev
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install libboost-dev ninja
+  - sudo apt-get install ninja
 
 install: sudo apt-get install ninja-build
 
