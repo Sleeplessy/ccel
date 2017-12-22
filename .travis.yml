@@ -1,5 +1,4 @@
 language: cpp
-dist: trusty
 branches:
   only:
     - master
@@ -12,9 +11,11 @@ addons:
     packages: libboost-all-dev
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install ninja
+  
+addons:
+  apt:
+    packages: libboost-all-dev ninja
 
-install: sudo apt-get install ninja-build
 
 script:
   - mkdir build

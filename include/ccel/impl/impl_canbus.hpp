@@ -17,8 +17,12 @@ namespace canbus {
 typedef boost::asio::posix::stream_descriptor canbus_stream;
 typedef boost::asio::posix::stream_descriptor::native_handle_type cansock_type;
 cansock_type open_cansock(const char *bus_name); // Open a SocketCAN socket
-const static can_frame __EMPTY_CAN_FRAME = {0x0, 0x0, 0x0,
-                                            0x0, 0x0, {0, 0, 0, 0, 0, 0, 0, 0}};
+const static can_frame __EMPTY_CAN_FRAME = {.can_id = 0x0,
+                                            .can_dlc = 0x0,
+                                            .__pad = 0x0,
+                                            .__res0 = 0x0,
+                                            .__res1 = 0x0,
+                                            .data = {0, 0, 0, 0, 0, 0, 0, 0}};
 const bool test_id_bit(canid_t can_id, std::size_t index);
 const bool ext_frame_test(can_frame &frame); // Test whether a frame is EXTENDED
 

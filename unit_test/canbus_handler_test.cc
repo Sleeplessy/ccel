@@ -1,18 +1,12 @@
 #include <ccel/canbus.hpp>
 
-void callback_func(can_frame frame) {
-  if (ccel::canbus::ext_frame_test(frame))
-    std::cout << "EXT: ";
-  else
-    std::cout << "STD: ";
-}
 
 int main() {
   boost::asio::io_service io;
   ccel::canbus::canbus_handler can("vcan0", io);
   bool dont_stop_until = true;
   while (can.opened()) {
-    can_frame _a = can.async_read_sock(callback_func, _a);
+    can_frame _a = can.read_sock();
     std::cout << "can data:" << std::hex;
     for (auto i = 0; i < _a.can_dlc; i++)
       std::cout << static_cast<unsigned>(_a.data[i]) << " ";
