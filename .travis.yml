@@ -1,5 +1,8 @@
 language: cpp
 dist: trusty
+branches:
+  only:
+    - master
 compiler:
   - gcc
   - clang
