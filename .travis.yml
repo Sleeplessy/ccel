@@ -20,5 +20,5 @@ script:
   - mkdir build
   - cd build
   - cmake .. -G Ninja
-  - ninja all j2
+  - ninja all
 os: linux
