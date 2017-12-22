@@ -1,0 +1,14 @@
+language: cpp
+dist: trusty
+compiler:
+  - gcc
+  - clang
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install libboost-dev ninja
+
+install: sudo apt-get install ninja-build
+
+script: mkdir build&& cd build && cmake .. -G Ninja && ninja j2
+os: linux
