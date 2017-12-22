@@ -6,14 +6,20 @@ compiler:
   - gcc
   - clang
 
-before_install:
-  - sudo apt-get update -qq
-
 addons:
   apt:
     packages: libboost-all-dev
+before_install:
+  - sudo apt-get update -qq
+  
+addons:
+  apt:
+    packages: libboost-all-dev ninja
 
-install: sudo apt-get install ninja-build
 
-script: mkdir build&& cd build && cmake .. -G Ninja && ninja j2
+script:
+  - mkdir build
+  - cd build
+  - cmake .. -G Ninja
+  - ninja all
 os: linux
