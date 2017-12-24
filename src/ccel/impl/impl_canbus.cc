@@ -102,7 +102,7 @@ int canbus_handler::refresh() {
 const bool canbus_handler::loopback() noexcept { return _loopback; }
 
 const bool canbus_handler::loopback(const bool turn) {
-  if(setsockopt(_stream.native(), SOL_CAN_RAW, CAN_RAW_LOOPBACK, &turn,
+  if(setsockopt(_stream.native_handle(), SOL_CAN_RAW, CAN_RAW_LOOPBACK, &turn,
                 sizeof(turn)) < 0)
     throw std::runtime_error("[CANBus Handler]Enabling loopback failed.");
   _loopback = turn;
