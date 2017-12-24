@@ -3,6 +3,10 @@
 
 // Invoking Boost headers
 #include <boost/asio.hpp>
+#include <boost/asio/steady_timer.hpp>
+#include <chrono>
+#include <boost/chrono/include.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/enable_shared_from_this.hpp> // For enabling shared smart ptrs from objects inside
 #include <boost/function.hpp>
 #include <boost/pool/object_pool.hpp> // For boost::object_pool
@@ -20,25 +24,44 @@
 
 namespace ccel {
 
-class uuid_t : public boost::uuids::uuid {
-public:
-  uuid_t() : boost::uuids::uuid(rand_uuid()()){};
-  uuid_t(int) : boost::uuids::uuid(boost::uuids::nil_uuid()){};
-  uuid_t(const char *str) : boost::uuids::uuid(string_uuid()(str)){};
-  explicit uuid_t(const boost::uuids::uuid &u) : boost::uuids::uuid(u){};
+  using boost::asio::io_service;
 
-private:
-  static boost::uuids::random_generator &rand_uuid() {
-    static boost::uuids::random_generator __gen;
-    return __gen;
-  }
+  // Time declaration field
 
-  static boost::uuids::string_generator &string_uuid() {
-    static boost::uuids::string_generator __gen;
-    return __gen;
-  }
-  operator boost::uuids::uuid();
-  operator boost::uuids::uuid() const;
+  using boost::posix_time::time_duration;
+
+
+  //Functions to gen time_duration
+  using std::chrono::microseconds;
+  using std::chrono::milliseconds;
+  using std::chrono::seconds;
+  using std::chrono::minutes;
+  using std::chrono::hours;
+
+  using boost::posix_time::duration_from_string;
+  using boost::asio::deadline_timer;
+  using boost::asio::steady_timer;;
+
+
+  class uuid_t : public boost::uuids::uuid {
+  public:
+    uuid_t() : boost::uuids::uuid(rand_uuid()()){};
+    uuid_t(int) : boost::uuids::uuid(boost::uuids::nil_uuid()){};
+    uuid_t(const char *str) : boost::uuids::uuid(string_uuid()(str)){};
+    explicit uuid_t(const boost::uuids::uuid &u) : boost::uuids::uuid(u){};
+
+  private:
+    static boost::uuids::random_generator &rand_uuid() {
+      static boost::uuids::random_generator __gen;
+      return __gen;
+    }
+
+    static boost::uuids::string_generator &string_uuid() {
+      static boost::uuids::string_generator __gen;
+      return __gen;
+    }
+    operator boost::uuids::uuid();
+    operator boost::uuids::uuid() const;
 };
 
 class base_handler : boost::noncopyable { // A handler must not be copyable

@@ -32,15 +32,15 @@ open_cansock(const char *bus_name) {
 
 canbus_handler::canbus_handler(const char *interface_name,
                                boost::asio::io_service &io)
-    : base_handler(io, sizeof(can_frame)), _stream(__handler_io),
-      _frame(can_frame{}), _interface_name{interface_name} {
+  : base_handler(io, sizeof(can_frame)), _loopback(false),_stream(__handler_io),
+     _frame(can_frame{}), _interface_name{interface_name} {
   this->open(interface_name);
 }
 
 canbus_handler::canbus_handler(cansock_type &can_sock,
                                boost::asio::io_service &io)
-    : base_handler(io, sizeof(can_frame)), _stream(__handler_io),
-      _frame(can_frame{}) {
+    : base_handler(io, sizeof(can_frame)), _loopback(false),
+      _stream(__handler_io), _frame(can_frame{}) {
   bind_sock(can_sock);
 }
 
@@ -97,6 +97,16 @@ int canbus_handler::close() {
 int canbus_handler::refresh() {
   _frame = can_frame{};
   return 0;
+}
+
+const bool canbus_handler::loopback() noexcept { return _loopback; }
+
+const bool canbus_handler::loopback(const bool turn) {
+  if(setsockopt(_stream.native(), SOL_CAN_RAW, CAN_RAW_LOOPBACK, &turn,
+                sizeof(turn)) < 0)
+    throw std::runtime_error("[CANBus Handler]Enabling loopback failed.");
+  _loopback = turn;
+  return _loopback;
 }
 
 std::string canbus_handler::interface_name() { return _interface_name; }

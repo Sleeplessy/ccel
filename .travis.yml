@@ -8,7 +8,7 @@ compiler:
 
 addons:
   apt:
-    packages: libboost-all-dev
+    packages: libboost-all-dev can-utils
 before_install:
   - sudo apt-get update -qq
   
@@ -22,4 +22,10 @@ script:
   - cd build
   - cmake ..
   - make
+
+after_success:
+  - sudo modprobe vcan && sudo ip link add dev vcan0 type vcan && sudo ip link set up vcan0
+  - cangen vcan0 -m -g 10&
+  - bin/unit_test/bin/unit_test/canbus_handler_test 100
+  - sudo bin/unit_test/virtual_keyboard_test
 os: linux

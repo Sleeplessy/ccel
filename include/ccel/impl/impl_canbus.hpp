@@ -3,10 +3,9 @@
 #include "common.hpp"
 #include <boost/asio.hpp>
 
-#include <iostream>
-
 // Bring SocketCAN header in
 #include <linux/can.h>
+#include <linux/can/raw.h>
 #include <net/if.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
@@ -29,7 +28,9 @@ public:
   int open();
   int open(const char *interface_name); // Open with a new interface
   int refresh();                        // Clear the frame buffer
-  can_frame &read_sock();               // Do read from sock
+  const bool loopback() noexcept;
+  const bool loopback(const bool turn);
+  can_frame &read_sock(); // Do read from sock
   template <typename _T_Func, typename... Args>
   can_frame &
   async_read_sock(_T_Func &__callback,
@@ -49,6 +50,7 @@ public:
   std::string interface_name(); // Get interface_name
   canbus_stream &stream();      // Get the stream
 private:
+  bool _loopback;
   canbus_stream _stream;
   can_frame _frame; // the canbus frame buffer
   std::string _interface_name;

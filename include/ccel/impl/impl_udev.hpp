@@ -27,7 +27,7 @@ const static bool KEY_RELEASE = false; // 0
 
 class virtual_keyboard_handler : base_handler {
 public:
-  virtual_keyboard_handler(boost::asio::io_service &io);
+  virtual_keyboard_handler(boost::asio::io_service &io,const std::string dev_name="ccel_vkey");
   ~virtual_keyboard_handler();
   int open();
   int close();
