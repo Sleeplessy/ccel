@@ -20,7 +20,7 @@ script:
   - make
   - sudo modprobe vcan && sudo ip link add dev vcan0 type vcan && sudo ip link set up vcan0
   - cangen vcan0 -m -g 10&
-  - bin/OBunit_test/canbus_handler_test 100
-  - sudo bin/unit_test/virtual_keyboard_test
+  - bin/unit_test/canbus_handler_test 100
+  - sudo bin/unit_test/virtual_keyboard_test # need sudo to invoke permission of uinput
 
 os: linux
