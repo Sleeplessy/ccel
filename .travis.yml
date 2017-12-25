@@ -8,7 +8,7 @@ compiler:
 
 addons:
   apt:
-    packages: ninja
+    packages: ninja can-utils
 before_install:
   - sudo apt-get update -qq
   - pip install --user cpp-coveralls
