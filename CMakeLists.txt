@@ -1,5 +1,15 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT(ccel)
+IF(${TARGET} MATCHES "^arm*")
+  SET(CMAKE_SYSTEM_PROCESSOR arm)
+  SET(CMAKE_FIND_ROOT_PATH  "/home/sleeplessy/x-tools/arm-unknown-linux-gnueabi/arm-unknown-linux-gnueabi")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -march=armv7-a")
+# search for programs in the build host directories
+  SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+# for libraries and headers in the target directories
+  SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+  SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+ENDIF()
 SET(CMAKE_CXX_STANDARD 14)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall")
 set(Boost_USE_STATIC_LIBS ON)
