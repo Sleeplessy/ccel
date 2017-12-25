@@ -19,8 +19,11 @@ script:
   - cmake ..
   - make
   - sudo modprobe vcan && sudo ip link add dev vcan0 type vcan && sudo ip link set up vcan0
-  - cangen vcan0 -m -g 10&
-  - bin/unit_test/canbus_handler_test 100
+  - cangen -g 200 & CANGEN_STD_PID=$!
+  - cangen -g 100 & CANGEN_EXT_PID=$!
+  - bin/unit_test/canbus_handler_test 100&
+  - kill $CANGEN_STD_PID
+  - kill $CANGEN_EXT_PID
   - sudo bin/unit_test/virtual_keyboard_test # need sudo to invoke permission of uinput
 
 os: linux
