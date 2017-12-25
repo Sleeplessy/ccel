@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]) {
   ccel::io_service io;
-  ccel::canbus::canbus_handler can("vcan0", io);
+  ccel::canbus::canbus_handler can("can0", io);
   unsigned loop_time = 50;
   if (argc > 1)
     loop_time = std::stoi(argv[1]);
