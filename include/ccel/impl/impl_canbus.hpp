@@ -31,6 +31,7 @@ public:
   const bool loopback() noexcept;
   const bool loopback(const bool turn);
   can_frame &read_sock(); // Do read from sock
+  void write_sock(can_frame& frame);      // Do write to sock;
   template <typename _T_Func, typename... Args>
   can_frame &
   async_read_sock(_T_Func &__callback,
