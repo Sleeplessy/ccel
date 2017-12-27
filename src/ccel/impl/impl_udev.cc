@@ -3,11 +3,14 @@
 namespace ccel {
 namespace udev {
 
-  virtual_keyboard_handler::virtual_keyboard_handler(boost::asio::io_service &io,const std::string dev_name)
-  : base_handler(io,sizeof(virtual_keyboard_handler)), _udev{}, _dev_name{dev_name}, _open(true) {
+virtual_keyboard_handler::virtual_keyboard_handler(boost::asio::io_service &io,
+                                                   const std::string dev_name,
+                                                   const int flags)
+    : base_handler(io, sizeof(virtual_keyboard_handler)), _udev{},
+      _dev_name{dev_name}, _open(true) {
   // Init the udev handler
   // Open the uinput file descriptor
-  _fd = ::open("/dev/uinput", O_WRONLY | O_NONBLOCK);
+  _fd = ::open("/dev/uinput", flags);
   // NOTICE THAT THIS IS NOT ccel::base_handler::open()
   ioctl(_fd, UI_SET_KEYBIT, KEY_SPACE);
   for (auto i = 0; i < 248; i++) {
@@ -46,7 +49,7 @@ int virtual_keyboard_handler::open() {
     ioctl(_fd, UI_SET_EVBIT, EV_KEY);
     ioctl(_fd, UI_SET_EVBIT, EV_REL);
     _udev = uinput_user_dev{};
-    if(write(_fd, &_udev, sizeof(_udev)) < 0)
+    if (write(_fd, &_udev, sizeof(_udev)) < 0)
       return -1;
     ioctl(_fd, UI_DEV_CREATE);
     _open = true;
@@ -62,9 +65,21 @@ int virtual_keyboard_handler::close() {
     return 0;
 }
 
+void virtual_keyboard_handler::sync(input_event &__ev) {
+  // uinput events needs to sync or it would stacked
+  __ev.type = EV_SYN;
+  __ev.code = SYN_REPORT;
+  __ev.value = 0;
+  if (write(_fd, &__ev, sizeof(input_event)) <
+      0) // In fact,if error happened, only -1 would be returned
+    throw std::runtime_error(
+        "Error while syncing keypress with kernel events.");
+}
+
 void virtual_keyboard_handler::press(int key_code) {
   if (key_code >= 0 && key_code <= 248 && !__key_proprety[key_code].get<0>()) {
     input_event __ev{};
+    gettimeofday(&__ev.time, NULL);
     __ev.type = EV_KEY;
     __ev.code = key_code;
     __ev.value = KEY_PRESS;
@@ -72,8 +87,10 @@ void virtual_keyboard_handler::press(int key_code) {
         0) // In fact,if error happened, only -1 would be returned
       throw std::runtime_error(
           "Error while syncing keypress with kernel events.");
-    else
+    else {
       __key_proprety[key_code].get<0>() = true;
+      sync(__ev);
+    }
   }
 }
 
@@ -86,19 +103,22 @@ void virtual_keyboard_handler::release(int key_code) {
     if (write(_fd, &__ev, sizeof(input_event)) < 0)
       throw std::runtime_error(
           "Error while syncing keyrelease with kernel events.");
-    else
+    else {
       __key_proprety[key_code].get<0>() = false;
+      sync(__ev);
+    }
   }
 }
 
 void virtual_keyboard_handler::click(int key_code) {
-    press(key_code);
-    boost::asio::steady_timer __timer(__handler_io);
-    auto __wait_td = milliseconds(get_click_time(key_code));
-    __timer.expires_from_now(__wait_td);
-    // wait a time here
-    __timer.async_wait(boost::bind(&virtual_keyboard_handler::release,this,key_code));
-    __handler_io.poll();
+  press(key_code);
+  boost::asio::steady_timer __timer(__handler_io);
+  auto __wait_td = milliseconds(get_click_time(key_code));
+  __timer.expires_from_now(__wait_td);
+  // wait a time here
+  __timer.async_wait(
+      boost::bind(&virtual_keyboard_handler::release, this, key_code));
+  __handler_io.poll();
 }
 
 void virtual_keyboard_handler::set_click_time(int key_code,

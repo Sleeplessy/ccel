@@ -27,7 +27,9 @@ const static bool KEY_RELEASE = false; // 0
 
 class virtual_keyboard_handler : base_handler {
 public:
-  virtual_keyboard_handler(boost::asio::io_service &io,const std::string dev_name="ccel_vkey");
+  virtual_keyboard_handler(boost::asio::io_service &io,
+                           const std::string dev_name = "ccel_vkey",
+                           const int flags = (O_WRONLY | O_NDELAY));
   ~virtual_keyboard_handler();
   int open();
   int close();
@@ -40,6 +42,7 @@ public:
   const unsigned get_click_time(int key_code);
 
 private:
+  void sync(input_event &__ev);
   boost::unordered_map<int, boost::tuple<bool, unsigned>> __key_proprety;
   // [KEY_VALUE] = <PRESSED, CLICK_TIME_MS>
   uinput_user_dev _udev; // The raw handler
