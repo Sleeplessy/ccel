@@ -13,10 +13,10 @@ const bool ext_frame_test(can_frame &frame) {
 }
 
 boost::asio::posix::stream_descriptor::native_handle_type
-open_cansock(const char *bus_name) {
+open_cansock(const char *bus_name,const int protocol=CAN_RAW) {
   sockaddr_can addr;
   ifreq ifr;
-  int can_sock = socket(PF_CAN, SOCK_RAW, CAN_RAW);
+  int can_sock = socket(PF_CAN, SOCK_RAW, protocol);
   std::strcpy(ifr.ifr_name, bus_name);
   if (ioctl(can_sock, SIOCGIFINDEX, &ifr) < 0)
     throw std::runtime_error(

@@ -5,6 +5,7 @@
 
 // Bring SocketCAN header in
 #include <linux/can.h>
+#include <linux/can/bcm.h>
 #include <linux/can/raw.h>
 #include <net/if.h>
 #include <sys/ioctl.h>
@@ -15,7 +16,8 @@ namespace ccel {
 namespace canbus {
 typedef boost::asio::posix::stream_descriptor canbus_stream;
 typedef boost::asio::posix::stream_descriptor::native_handle_type cansock_type;
-cansock_type open_cansock(const char *bus_name); // Open a SocketCAN socket
+cansock_type open_cansock(const char *bus_name,
+                          const int protocol); // Open a SocketCAN socket
 const static can_frame __EMPTY_CAN_FRAME = {};
 const bool test_id_bit(canid_t can_id, std::size_t index);
 const bool ext_frame_test(can_frame &frame); // Test whether a frame is EXTENDED
@@ -30,7 +32,12 @@ public:
   int refresh();                        // Clear the frame buffer
   const bool loopback() noexcept;
   const bool loopback(const bool turn);
+<<<<<<< Updated upstream
   can_frame &read_sock(); // Do read from sock
+=======
+  can_frame &read_sock();            // Do read from sock
+  void write_sock(can_frame &frame); // Do write to sock;
+>>>>>>> Stashed changes
   template <typename _T_Func, typename... Args>
   can_frame &
   async_read_sock(_T_Func &__callback,
