@@ -111,6 +111,14 @@ const bool canbus_handler::loopback(const bool turn) {
 
 std::string canbus_handler::interface_name() { return _interface_name; }
 
+
+void canbus_handler::write_sock(can_frame &frame) {
+  boost::system::error_code ec;
+  _stream.write_some(boost::asio::buffer(&frame, sizeof(frame)), ec);
+  if (ec)
+    throw std::runtime_error("[CANBUS_Handler] write_sock error.");
+}
+
 canbus_stream &canbus_handler::stream() { return _stream; }
 }
 }
